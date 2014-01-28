@@ -175,7 +175,7 @@ public static void closeDriver(String webDriver){
 	@Parameters({"proxyDirecc","sheetsToWork","projectDirectory","xlsDirectory"})
 	public void beforeSuite(String proxyDirecc,String sheetsToWork,String projectDirectory,String xlsDirectory) throws Exception{
 		
-		System.setProperty("webdriver.chrome.driver",projectDirectory + "\\drivers\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver",projectDirectory + "\\drivers\\chromedriver-2.8.exe");
 		System.setProperty(InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY, projectDirectory + "\\drivers\\IEDriverServer.exe"); 
 		
 		startServer(proxyDirecc);
@@ -196,7 +196,10 @@ public static void closeDriver(String webDriver){
 		
 		LogManager.closeXLS(xlsDirectory, XLS);
 		
-		closeServer();		
+		closeServer();
+		
+		Process process=Runtime.getRuntime().exec("xcopy C:\\Users\\Augusto\\workspace\\Dev-AutomationSuite\\test-output "+logDirectory+" /e /i /h");
+		process.waitFor();
 		
 	}
 

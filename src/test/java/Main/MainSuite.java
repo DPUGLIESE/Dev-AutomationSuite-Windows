@@ -5,6 +5,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.browsermob.proxy.ProxyServer;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.android.AndroidDriver;
+import org.openqa.selenium.android.library.AndroidWebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -42,6 +44,7 @@ public class MainSuite {
 	public static DesiredCapabilities ffCap = DesiredCapabilities.firefox();
 	public static DesiredCapabilities chromeCap = DesiredCapabilities.chrome();
 	public static DesiredCapabilities ieCap = DesiredCapabilities.internetExplorer();
+	public static DesiredCapabilities androidCap = DesiredCapabilities.android();
 	
 //XLS file and sheets
 	
@@ -71,7 +74,7 @@ public class MainSuite {
 	    server.setCaptureHeaders(true);
 	   
 	    if (!(proxyDirecc.equals("")||proxyDirecc.equals("NOPROXY"))){
-	    	System.out.println("LAPUTAMADREEE");
+	    	
 		    proxy = server.seleniumProxy();
 	
 		    if (!(proxyDirecc.equals("")||proxyDirecc.equals("NOPROXY"))){
@@ -94,6 +97,7 @@ public class MainSuite {
 	
 // Methods to open browsers
 	
+	@SuppressWarnings("deprecation")
 	public static WebDriver openDriver(String webDriver){
 		
 		switch (webDriver){
@@ -119,6 +123,14 @@ public class MainSuite {
 				Driver = new ChromeDriver(chromeCap);			
 				Driver.manage().deleteAllCookies();		
 				System.out.println("*-*-*-  CHROME DRIVER INICIATED  -*-*-*");
+				
+				break;
+				
+			case "android":
+				
+				//androidCap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+				Driver = new AndroidDriver();
+				System.out.println("*-*-*-  ANDROID DRIVER INICIATED  -*-*-*");
 				
 				break;
 		
@@ -154,6 +166,13 @@ public static void closeDriver(String webDriver){
 				System.out.println("*-*-*-  CHROME DRIVER CLOSED  -*-*-*");
 				
 				break;
+				
+			case "android":
+				
+				Driver.quit();
+				System.out.println("*-*-*-  ANDROID DRIVER CLOSED  -*-*-*");
+				
+				break;
 		
 		}
 		
@@ -172,33 +191,37 @@ public static void closeDriver(String webDriver){
 //TestNG methods
 	
 	@BeforeSuite
-	@Parameters({"proxyDirecc","sheetsToWork","projectDirectory","xlsDirectory"})
-	public void beforeSuite(String proxyDirecc,String sheetsToWork,String projectDirectory,String xlsDirectory) throws Exception{
+	@Parameters({"proxyDirecc","sheetsToWork","xlsDirectory"})
+	public void beforeSuite(String proxyDirecc,String sheetsToWork,String xlsDirectory) throws Exception{
 		
-		System.setProperty("webdriver.chrome.driver",projectDirectory + "\\drivers\\chromedriver-2.8.exe");
-		System.setProperty(InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY, projectDirectory + "\\drivers\\IEDriverServer.exe"); 
+		System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+"\\drivers\\chromedriver-2.8.exe");
+		System.setProperty(InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY,System.getProperty("user.dir")+"\\drivers\\IEDriverServer.exe"); 
 		
 		startServer(proxyDirecc);
 		
-		XLS = LogManager.openXLS(xlsDirectory);
+		if (!xlsDirectory.equals("NOINPUT")){
+			XLS = LogManager.openXLS(xlsDirectory);
+			sheets = LogManager.getSheets(sheetsToWork, XLS);
+		}
 		
-		sheets = LogManager.getSheets(sheetsToWork, XLS);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd#HH-mm-ss");
 		Date date = new Date();
 		//create a new log folder for this session
-		logDirectory = projectDirectory+"\\test-logs\\"+dateFormat.format(date).toString();
-		new File(projectDirectory+"\\test-logs\\"+dateFormat.format(date).toString()).mkdirs();
+		logDirectory = System.getProperty("user.dir")+"\\test-logs\\"+dateFormat.format(date).toString();
+		new File(System.getProperty("user.dir")+"\\test-logs\\"+dateFormat.format(date).toString()).mkdirs();
+		System.out.println("Project directory: "+System.getProperty("user.dir"));
 	}
 	
 	@AfterSuite
 	@Parameters({"xlsDirectory"})
 	public void afterSuite(String xlsDirectory) throws Exception{
-		
-		LogManager.closeXLS(xlsDirectory, XLS);
-		
+	
+		if (!xlsDirectory.equals("NOINPUT")){
+			LogManager.closeXLS(xlsDirectory, XLS);
+		}
 		closeServer();
 		
-		Process process=Runtime.getRuntime().exec("xcopy C:\\Users\\Augusto\\workspace\\Dev-AutomationSuite\\test-output "+logDirectory+" /e /i /h");
+		Process process=Runtime.getRuntime().exec("xcopy C:\\Users\\Augusto\\workspace\\Dev-AutomationSuite\\test-output\\MainSuite "+logDirectory+" /e /i /h");
 		process.waitFor();
 		
 	}

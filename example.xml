@@ -2,7 +2,6 @@
 
 <suite name="MainSuite" verbose="1" >
     
-    <parameter name="projectDirectory" value="C:\\Users\\Augusto\\workspace\\Dev-AutomationSuite"></parameter>
     <parameter name="xlsDirectory" value="C:\\Users\\Augusto\\workspace\\Dev-AutomationSuite\\src\\resources\\example.xls"></parameter>
     <parameter name="sheetsToWork" value="exampleIn;exampleOUT"></parameter>
 	<parameter name="proxyDirecc" value=""></parameter>
@@ -18,26 +17,5 @@
     	</classes>
 
   	</test>
-  	<test name="Example test FF">
-		
-	    <parameter name="webDriver" value="firefox"></parameter>
-	    
-		<classes>
-		    
-		    <class name="Tests.Example"/>
-
-    	</classes>
-
-  	</test>
-  	<test name="Example test Explorer">
-		
-	    <parameter name="webDriver" value="explorer"></parameter>
-	    
-		<classes>
-		    
-		    <class name="Tests.Example"/>
-
-    	</classes>
-
-  	</test>
+  	
 </suite>

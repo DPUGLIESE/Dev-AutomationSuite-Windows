@@ -1,0 +1,33 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="MainSuite" verbose="1" >
+    
+    <parameter name="xlsDirectory" value="NOINPUT"></parameter>
+    <parameter name="sheetsToWork" value=""></parameter>
+    <parameter name="proxyDirecc" value=""></parameter>
+	
+	<test name="Example test Chrome">
+		
+	    <parameter name="webDriver" value="chrome"></parameter>
+	    
+		<classes>
+		    
+		    <class name="Tests.ExampleWithProviders"/>
+
+    	</classes>
+
+  	</test>
+  	
+  	<test name="Example test Firefox">
+		
+	    <parameter name="webDriver" value="firefox"></parameter>
+	    
+		<classes>
+		    
+		    <class name="Tests.ExampleWithProviders"/>
+
+    	</classes>
+
+  	</test>
+  
+</suite>
